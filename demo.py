@@ -1,7 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from flask import request
 
-app = Flask(__name__)
+from database_msql import check_user, insert_user, app
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -13,8 +14,23 @@ def login():
         return render_template('login.html')
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        status = insert_user(request.form['username'], request.form['password'])
+        if status:
+            return redirect(url_for('login'))
+        else:
+            return render_template('register.html')
+    else:
+        return render_template('register.html')
+
+
 def valid_login(username, password):
-    return True
+    status = check_user(username, password)
+    return
 
 
+if __name__ == '__main__':
+    app.run()
 
