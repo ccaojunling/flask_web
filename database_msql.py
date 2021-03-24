@@ -19,7 +19,7 @@ class User(db.Model):
 
 
 def check_user(username, password):
-    art=User.query.filter(User.username==username, User.password==password).first()
+    art = User.query.filter(User.username == username, User.password == password).first()
     if art is None:
         return False
     return True
@@ -35,12 +35,10 @@ def insert_user(username, password):
     else:
         return True
 
-        
-
 
 if __name__ == '__main__':
-    a = insert_user(123456,123)
-    print (a)
+    a = check_user(11, 11)
+    print(a)
 # db.create_all()
 
 # print (art)
