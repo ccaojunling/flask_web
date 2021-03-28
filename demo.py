@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, jsonify
 from flask import request
 
 from database_msql import check_user, insert_user, app
@@ -11,14 +11,37 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    template = None
     if request.method == 'POST':
-        print(request.form['username'], request.form['password'])
-        print(valid_login(request.form['username'], request.form['password']))
         if valid_login(request.form['username'], request.form['password']):
-            return render_template('index.html')
-        return render_template('login.html')
+            if request.form["role"] == '0':
+                template = render_template('index.html')
+            else:
+                response_data = {
+                    "code": 200,
+                    "message": "成功",
+                    "username": request.form['username'],
+                    "password": request.form['password'],
+                }
+                template = jsonify(response_data)
+        else:
+            if request.form["role"] == '0':
+                template = render_template('login.html')
+            else:
+                response_data = {
+                    "code": -100,
+                    "message": "失败",
+                    "username": request.form['username'],
+                    "password": request.form['password'],
+                }
+                template = jsonify(response_data)
     else:
-        return render_template('login.html')
+        template = render_template('login.html')
+    return template
+
+
+
+
 
 
 @app.route('/register', methods=['GET', 'POST'])
